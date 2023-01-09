@@ -1,14 +1,13 @@
-console.log('Hello!')
+console.log('Hello!');
 const showcaseEl = document.querySelector('.showcase');
 const modeEl = document.querySelector('.mode');
 const bodyEl = document.querySelector('body');
-const selectedEl = document.querySelector('.select select');
 const formSectionEl = document.querySelector('.form-section');
+const headerEl = document.querySelector('.header');
+const options = document.querySelectorAll('option');
+var countryEl, anchorEl;
 
-modeEl.addEventListener('click', function() {
-    bodyEl.classList.toggle('dark-mode');
-})
-
+// display first twelve countries from restcountries API
 fetch('https://restcountries.com/v2/all')
 .then(response => response.json())
 .then(data => {
@@ -26,10 +25,15 @@ fetch('https://restcountries.com/v2/all')
    }).join(' ');
    showcaseEl.innerHTML = outputData;
    console.log(data);
+   countryEl = document.querySelectorAll('.country');
+   console.log(countryEl);
 })
 .catch(error => console.log(error));
 
-selectedEl.addEventListener('click', function(e) {
+// get countries by region section
+const selectEl = document.querySelector('select');
+console.log(selectEl);
+selectEl.addEventListener('click', function(e) {
     let selectedRegion = e.target.value;
     fetch(`https://restcountries.com/v2/region/${selectedRegion}`)
 .then(response => response.json())
@@ -47,11 +51,15 @@ selectedEl.addEventListener('click', function(e) {
     </div>`
    }).join(' ');
     showcaseEl.innerHTML = outputData;
+    countryEl = document.querySelectorAll('.country');
+    console.log(countryEl);
 })
 });
 
-const searchEl = document.querySelector('.search input');
-searchEl.addEventListener('keyup', function(e) {
+// search for a country section
+const inputEl = document.querySelector('input');
+console.log(inputEl);
+inputEl.addEventListener('keyup', function(e) {
     e.preventDefault();
     let countryName = e.target.value.toLowerCase();
     fetch(`https://restcountries.com/v2/name/${countryName}`)
@@ -70,6 +78,8 @@ searchEl.addEventListener('keyup', function(e) {
     </div>`
    }).join(' ');
    showcaseEl.innerHTML = outputData;
+   countryEl = document.querySelectorAll('.country');
+   console.log(countryEl);
    document.querySelector('.searched-country').addEventListener('click', function() {
     showcaseEl.style.display = 'none';
     formSectionEl.style.display = 'none';
@@ -79,6 +89,7 @@ searchEl.addEventListener('keyup', function(e) {
 })
 });
 
+// get country detail section
 function getCountryDetails(ev) {
     fetch(`https://restcountries.com/v2/name/${ev}`)
     .then(response => response.json())
@@ -97,7 +108,12 @@ function getCountryDetails(ev) {
             }
             console.log(borderArr);
             const borderOut = borderArr;
-            return `<div class='country-detail'>
+            return `
+            <div class="back-container">
+                <i class="fa-solid fa-arrow-left"></i>
+                <a href="index.html">Back</a>
+            </div>
+            <div class='country-detail'>
                 <div class='flag-detail'>
                     <img src=${item.flags.png} alt="" />
                 </div>
@@ -134,9 +150,24 @@ console.log(bordersEl);
         console.log(borderCountry);
         getCountryDetails(borderCountry.toLowerCase());
     })
+});
+anchorEl = document.querySelector('.back-container a');
+console.log(anchorEl);
 })
-    })
 }
+
+// change mode section
+modeEl.addEventListener('click', function() {
+    bodyEl.classList.toggle('dark-mode');
+    headerEl.classList.toggle('.header-dark');
+    [...countryEl].map(item => item.classList.toggle('country-dark'));
+    [...options].map(item => item.classList.toggle('option-dark'));
+    inputEl.classList.toggle('.search-dark');
+    selectEl.classList.toggle('.select-dark');
+    anchorEl.classList.toggle('anchor-changer');
+});
+
+
 
 
 
